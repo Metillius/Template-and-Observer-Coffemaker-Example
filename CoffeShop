@@ -1,0 +1,121 @@
+
+abstract class Subject{
+    String CoffeType;
+    String BeanType;
+
+
+    public Subject(String CoffeType, String BeanType){
+        this.CoffeType = CoffeType;
+        this.BeanType = BeanType;
+    }
+
+    public String getCoffeType() {
+        return CoffeType;
+    }
+
+    public void setCoffeType(String coffeType) {
+        CoffeType = coffeType;
+    }
+
+    public String getBeanType() {
+        return BeanType;
+    }
+
+    public void setBeanType(String beanType) {
+        BeanType = beanType;
+    }
+
+
+}
+
+abstract class CoffeMaker extends Subject{
+    MobilePhone phone;
+
+
+    public CoffeMaker(String CoffeType, String BeanType , MobilePhone phone) {
+        super(CoffeType, BeanType);
+        this.phone = phone;
+    }
+    public void Notify(){
+        phone.Update(this);
+    }
+
+    protected void grindBeans(){
+        System.out.println("Grinding " + BeanType + " beans...");
+    }
+    protected void hook1(){}
+    protected void brewCoffe(){System.out.println("Brewing Coffee...");}
+    protected void hook2(){}
+    protected void pourIntoCup(){System.out.println("Pouring coffee into cup... Have a nice day!");}
+
+    protected void Template( ){
+        grindBeans();
+        hook1();
+        brewCoffe();
+        hook2();
+        pourIntoCup();
+        Notify();
+    }
+
+
+
+
+}
+
+interface AbstractObserver{
+    public void Update(Subject subject);
+}
+
+class MobilePhone implements AbstractObserver{
+    private Subject subj;
+    private String subjName;
+    @Override
+    public void Update(Subject subject) {
+        subj = subject;
+        subjName = subj.getCoffeType();
+        System.out.println();
+        System.out.println("+++New Notification: " + subject.getCoffeType()+ " Coffe is made with " +subj.getBeanType() + " beans");
+    }
+}
+
+class AmericanoMaker extends CoffeMaker{
+
+
+    public AmericanoMaker(String CoffeType, String BeanType, MobilePhone phone) {
+        super(CoffeType, BeanType, phone);
+    }
+
+    @Override
+    protected void hook1(){System.out.println("Heating Water for Americano...");}
+
+}
+
+class LatteMaker extends CoffeMaker{
+
+    public LatteMaker(String CoffeType, String BeanType, MobilePhone phone) {
+        super(CoffeType, BeanType, phone);
+    }
+
+    @Override
+    protected void hook2(){System.out.println("Steaming Milk for Latte...");}
+}
+
+
+
+public class CoffeeShop {
+    public static void main(String[] args) {
+        MobilePhone phone = new MobilePhone(); // Create a MobilePhone object
+
+        AmericanoMaker amer = new AmericanoMaker("Americano", "Arabica", phone);
+        LatteMaker lat = new LatteMaker("Latte" , "Robusta", phone);
+
+        System.out.println("Americano Maker");
+        amer.Template();
+
+        System.out.println();
+
+        System.out.println("Latte Maker");
+        lat.Template();
+
+    }
+}
